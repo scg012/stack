@@ -4,7 +4,8 @@ Fifth supports the following arithmetic operators:
 + - * /
 which act upon the top of the stack.
 
-Fifth also supports arithmetic operators that act upon the bottom of the stack, i.e. in the reverse manner:
+Fifth also supports arithmetic operators that act upon the bottom of the stack,
+i.e. in the reverse manner:
 r+
 r-
 r*
@@ -18,7 +19,8 @@ POP - remove the top element of the stack
 SWAP - swap the top two elements of the stack
 DUP - duplicate the top element of the stack
 
-Fifth also supports arithmetic operators that act upon the bottom of the stack, i.e. in the reverse manner:
+Fifth also supports arithmetic operators that act upon the bottom of the stack,
+i.e. in the reverse manner:
 rPUSH x - push x onto the bottom of the stack, where x is a valid integer
 rPOP - remove the bottom element of the stack
 rSWAP - swap the bottom two elements of the stack
