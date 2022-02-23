@@ -14,14 +14,11 @@ from fifth import OPERATORS
 from fifth import commands
 from fifth import operators
 from fifth import InsufficientStackItemsError
+from fifth import InvalidOperationError
 
 
 class InvalidCommandError(Exception):
     """For commands that caused an error."""
-
-
-class InvalidOperationError(Exception):
-    """For operations that caused an error."""
 
 
 class Stack:
@@ -37,6 +34,11 @@ class Stack:
             COMMAND.POP: self.fifth.pop,
             COMMAND.SWAP: self.fifth.swap,
             COMMAND.DUP: self.fifth.dup,
+            #
+            COMMAND.REVERSE_PUSH: self.fifth.reverse_push,
+            COMMAND.REVERSE_POP: self.fifth.reverse_pop,
+            COMMAND.REVERSE_SWAP: self.fifth.reverse_swap,
+            COMMAND.REVERSE_DUP: self.fifth.reverse_dup,
         }
 
         # A dict mapping input operators to functions
@@ -45,6 +47,10 @@ class Stack:
             OPERATORS.SUBTRACT: operator.sub,
             OPERATORS.MULTIPLY: operator.mul,
             OPERATORS.DIVIDE: operator.floordiv,
+            OPERATORS.REVERSE_ADD: self.fifth.reverse_add,
+            OPERATORS.REVERSE_SUBTRACT: self.fifth.reverse_subtract,
+            OPERATORS.REVERSE_MULTIPLY: self.fifth.reverse_multiply,
+            OPERATORS.REVERSE_DIVIDE: self.fifth.reverse_floordiv,
         }
 
     def __str__(self):
@@ -79,7 +85,7 @@ class Stack:
             cmd_func = self.command_func.get(command)
             # Handle any specific arguments to functions
             command_args = command_line_split[1:]
-            if command == COMMAND.PUSH:
+            if command in (COMMAND.PUSH, COMMAND.REVERSE_PUSH):
                 self.__validate_command_args_count(command_args, 1)
                 first_argument = command_line_split.pop()
                 if not first_argument.isdigit():
@@ -89,26 +95,32 @@ class Stack:
                 self.__validate_command_args_count(command_args, 0)
                 cmd_func()
         else:
-            first_operand = self.fifth.pop()
-            try:
-                # The second item from the top of the stack acts as
-                # the summend or multiplier or dividend or minuend
-                second_operand = self.fifth.pop()
-            except InsufficientStackItemsError as error:
-                # reset the stack to its original state
-                self.fifth.push(first_operand)
-                raise error
+            # Arithmetic Operators
+            if command.startswith('r'):
+                # Reverse Arithmetic operators
+                op_func = self.operator_func.get(command)
+                op_func()
+            else:
+                first_operand = self.fifth.pop()
+                try:
+                    # The second item from the top of the stack acts as
+                    # the summend or multiplier or dividend or minuend
+                    second_operand = self.fifth.pop()
+                except InsufficientStackItemsError as error:
+                    # reset the stack to its original state
+                    self.fifth.push(first_operand)
+                    raise error
 
-            if command == OPERATORS.DIVIDE and first_operand == 0:
-                # reset the stack to its original state
-                self.fifth.push(second_operand)
-                self.fifth.push(first_operand)
-                raise InvalidOperationError("ERROR: cannot divide by zero.")
+                if command == OPERATORS.DIVIDE and first_operand == 0:
+                    # reset the stack to its original state
+                    self.fifth.push(second_operand)
+                    self.fifth.push(first_operand)
+                    raise InvalidOperationError("ERROR: cannot divide by zero.")
 
-            op_func = self.operator_func.get(command)
-            # The order of operands affects division and subtraction arithmetic
-            result = op_func(second_operand, first_operand)
-            self.fifth.push(result)
+                op_func = self.operator_func.get(command)
+                # The order of operands affects division and subtraction arithmetic
+                result = op_func(second_operand, first_operand)
+                self.fifth.push(result)
 
         return str(self.fifth)
 

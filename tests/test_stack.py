@@ -128,6 +128,31 @@ class TestPush:
             single_item_stack.interpret(f"{COMMAND.PUSH} ABC")
 
 
+class TestReversePush:
+    def test_push_on_empty_stack(self, empty_stack):
+        command = f"{COMMAND.REVERSE_PUSH} 1"
+        empty_stack.interpret(command)
+        assert str(empty_stack) == str([1])
+
+    def test_on_non_empty_stack(self, single_item_stack):
+        command = f"{COMMAND.REVERSE_PUSH} 3"
+        single_item_stack.interpret(command)
+        assert str(single_item_stack) == str([3, 1])
+
+    def test_push_with_invalid_argument_type(self, single_item_stack):
+        with pytest.raises(InvalidCommandError, match="ERROR: an integer argument expected."):
+            single_item_stack.interpret(f"{COMMAND.REVERSE_PUSH} ABC")
+
+    def test_twice(self, empty_stack):
+        command = f"{COMMAND.REVERSE_PUSH} 3"
+        empty_stack.interpret(command)
+        assert str(empty_stack) == str([3])
+
+        command = f"{COMMAND.REVERSE_PUSH} 9"
+        empty_stack.interpret(command)
+        assert str(empty_stack) == str([9, 3])
+
+
 class TestPop:
     def test_on_single_item_stack(self, single_item_stack):
         single_item_stack.interpret(COMMAND.POP)
@@ -158,6 +183,46 @@ class TestAdd:
     def test_on_double_item_stack(self, double_item_stack):
         double_item_stack.interpret(OPERATORS.ADD)
         assert str(double_item_stack) == str([3])
+
+
+class TestReverseAdd:
+    def test_on_double_item_stack(self, double_item_stack):
+        double_item_stack.interpret(OPERATORS.REVERSE_ADD)
+        assert str(double_item_stack) == str([3])
+
+    def test_on_three_item_stack(self, three_item_stack):
+        three_item_stack.interpret(OPERATORS.REVERSE_ADD)
+        assert str(three_item_stack) == str([3, 3])
+
+
+class TestReverseSubtract:
+    def test_on_double_item_stack(self, double_item_stack):
+        double_item_stack.interpret(OPERATORS.REVERSE_SUBTRACT)
+        assert str(double_item_stack) == str([-1])
+
+    def test_on_three_item_stack(self, three_item_stack):
+        three_item_stack.interpret(OPERATORS.REVERSE_SUBTRACT)
+        assert str(three_item_stack) == str([-1, 3])
+
+
+class TestReverseMultiply:
+    def test_on_double_item_stack(self, double_item_stack):
+        double_item_stack.interpret(OPERATORS.REVERSE_MULTIPLY)
+        assert str(double_item_stack) == str([2])
+
+    def test_on_three_item_stack(self, three_item_stack):
+        three_item_stack.interpret(OPERATORS.REVERSE_MULTIPLY)
+        assert str(three_item_stack) == str([2, 3])
+
+
+class TestReverseDivide:
+    def test_on_double_item_stack(self, double_item_stack):
+        double_item_stack.interpret(OPERATORS.REVERSE_DIVIDE)
+        assert str(double_item_stack) == str([0])
+
+    def test_on_three_item_stack(self, three_item_stack):
+        three_item_stack.interpret(OPERATORS.REVERSE_DIVIDE)
+        assert str(three_item_stack) == str([0, 3])
 
 
 class TestDivide:

@@ -6,12 +6,15 @@ Operations always apply to the top of the stack.
 
 Fifth supports the following arithmetic operators:
 
-```
-+ - * /
-```
+`+`, `-`, `*`, `/`
+      which act upon the top of the stack.
 
-Each of these applies the operator to the two values on the top of the stack and pushes the
-result to the top of the stack. If division results in a non-integer, it is round down.
+Fifth also supports arithmetic operators that act upon the bottom of the stack, i.e. in the reverse manner:
+* `r+`
+* `r-`
+* `r*`
+* `r/`
+
 
 Fifth also supports the following commands:
 
@@ -19,6 +22,12 @@ Fifth also supports the following commands:
 * `POP` - remove the top element of the stack
 * `SWAP` - swap the top two elements of the stack
 * `DUP` - duplicate the top element of the stack
+
+Fifth also supports arithmetic operators that act upon the bottom of the stack, i.e. in the reverse manner:
+* `rPUSH x` - push x onto the bottom of the stack, where x is a valid integer
+* `rPOP` - remove the bottom element of the stack
+* `rSWAP` - swap the bottom two elements of the stack
+* `rDUP` - duplicate bottom top element of the stack
 
 Stack is a python program which works as a fifth interpreter. Each line of input to the program
 represents a single fifth command.  The result of each command is output to the terminal.
@@ -44,6 +53,14 @@ stack is [28, 14]
 stack is [2]
 +
 ERROR
+
+rPUSH 11
+stack is [11, 3]
+
+rPUSH 5
+stack is [5, 11, 3]
+
+
 ```
 
 ## Requirements:

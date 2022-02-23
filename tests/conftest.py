@@ -43,6 +43,13 @@ def double_item_stack(empty_stack):
 
 
 @pytest.fixture
+def three_item_stack(empty_stack):
+    empty_stack.fifth._stack.extend([1, 2, 3])
+    assert str(empty_stack) == str([1, 2, 3])
+    yield empty_stack
+
+
+@pytest.fixture
 def double_item_stack_push_0_push_2(empty_stack):
     empty_stack.fifth._stack.extend([0, 2])
     assert str(empty_stack) == str([0, 2])
